@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: monitor
+  labels:
+    k8s-app: kube-state-metrics
+spec:
+  selector:
+    matchLabels:
+      k8s-app: kube-state-metrics
+  template:
+    metadata:
+      labels:
+        k8s-app: kube-state-metrics
+    spec:
+      containers:
+      - name: kube-state-metrics
+        image: raspbernetes/kube-state-metrics
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-state-metrics
+  namespace: monitor
+  labels:
+    k8s-app: kube-state-metrics
+spec:
+  selector:
+    k8s-app: kube-state-metrics
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 32080
